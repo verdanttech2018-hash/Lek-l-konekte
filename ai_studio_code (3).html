@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lekòl Konekte — Modil Nòt ak Bleten</title>
+  <style>
+    :root {
+      --primary: #1B4F8A;
+      --primary-dark: #123660;
+      --primary-light: #eef4fb;
+      --accent: #E63946;
+      --accent-hover: #c92a37;
+      --text: #1f2937;
+      --text-muted: #64748b;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #cbd5e1;
+      --radius: 8px;
+      --shadow: 0 4px 14px rgba(27, 79, 138, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* Top Bar de navigation interne */
+    .topbar {
+      background: #ffffff;
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .topbar-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: var(--primary);
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 900;
+    }
+
+    .nav-tabs {
+      display: flex;
+      background: var(--bg);
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      gap: 4px;
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 24px auto;
+      padding: 0 20px;
+    }
+
+    /* Vues */
+    .view {
+      display: block;
+    }
+    .view.hidden {
+      display: none;
+    }
+
+    /* Boutons communs */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-accent {
+      background: var(--accent);
+      color: #ffffff;
+    }
+    .btn-accent:hover {
+      background: var(--accent-hover);
+    }
+
+    /* PAGE 1: Saisie des notes */
+    .filter-panel {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 20px;
+    }
+
+    .filter-group {
+      flex: 1 1 200px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .filter-group label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    select, input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      outline: none;
+      font-size: 0.95rem;
+      background: #fafbfc;
+      transition: border-color 0.2s;
+    }
+
+    select:focus, input:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+    }
+
+    .table-container {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    thead th {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--border);
+    }
+
+    tbody td {
+      padding: 10px 16px;
+      border-bottom: 1px solid #edf2f7;
+      font-size: 0.92rem;
+    }
+
+    tbody tr:hover {
+      background: #fbfcfe;
+    }
+
+    .note-input {
+      width: 90px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .obs-input {
+      width: 100%;
+    }
+
+    tfoot td {
+      background: #f1f5f9;
+      padding: 14px 16px;
+      font-weight: 700;
+      border-top: 2px solid var(--border);
+    }
+
+    .action-bar {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .stats-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      font-weight: 600;
+    }
+
+    .stats-card .moy-value {
+      font-size: 1.3rem;
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    /* PAGE 2: Bulletin scolaire officiel */
+    .bulletin-toolbar {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .bulletin-sheet {
+      background: #ffffff;
+      max-width: 860px;
+      margin: 0 auto 40px;
+      padding: 36px 40px;
+      border: 3px double var(--primary);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      position: relative;
+    }
+
+    .bulletin-header {
+      display: grid;
+      grid-template-columns: 110px 1fr 110px;
+      align-items: center;
+      text-align: center;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+
+    .school-emblem {
+      width: 90px;
+      height: 90px;
+      border: 2px solid var(--primary);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      margin: 0 auto;
+      color: var(--primary);
+      font-size: 1.8rem;
+      font-weight: 900;
+      background: var(--primary-light);
+    }
+
+    .ministry-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .school-name {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--primary);
+      text-transform: uppercase;
+      margin: 2px 0;
+    }
+
+    .school-motto {
+      font-size: 0.85rem;
+      font-style: italic;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .bulletin-title {
+      margin-top: 10px;
+      display: inline-block;
+      background: var(--primary);
+      color: #fff;
+      padding: 4px 24px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      letter-spacing: 1.5px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    /* Carte méta-données élève */
+    .student-info-box {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px 24px;
+      background: #fafbfc;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      font-size: 0.92rem;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 4px;
+    }
+
+    .info-row span:first-child {
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .info-row span:last-child {
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    /* Table de notes du bulletin */
+    .bulletin-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      border: 1.5px solid var(--text);
+    }
+
+    .bulletin-table th, .bulletin-table td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      font-size: 0.88rem;
+      text-align: center;
+    }
+
+    .bulletin-table th {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-weight: 800;
+      border-bottom: 2px solid var(--text);
+    }
+
+    .bulletin-table td.subject-name {
+      text-align: left;
+      font-weight: 700;
+    }
+
+    .bulletin-summary-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .summary-card {
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 18px;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .mention-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 4px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      margin-left: 8px;
+    }
+
+    .mention-excellent { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .mention-bien { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
+    .mention-assezbien { background: #fef9c3; color: #a16207; border: 1px solid #fde047; }
+    .mention-insuffisant { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+
+    .signatures {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+    }
+
+    .sig-block {
+      border-top: 1.5px dashed var(--border);
+      padding-top: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    /* Notification simple */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      transform: translateY(120%);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+    }
+
+    /* STYLES D'IMPRESSION POUR LE BULLETIN */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+
+      .topbar, .bulletin-toolbar, .toast, #view-grades {
+        display: none !important;
+      }
+
+      #view-bulletin {
+        display: block !important;
+      }
+
+      .container {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .bulletin-sheet {
+        border: 2px solid #000000 !important;
+        box-shadow: none !important;
+        padding: 20px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        page-break-after: avoid;
+      }
+
+      .bulletin-header, .bulletin-title {
+        border-color: #000 !important;
+        color: #000 !important;
+      }
+
+      .bulletin-title {
+        background: #eee !important;
+        color: #000 !important;
+      }
+
+      .bulletin-table th {
+        background: #f0f0f0 !important;
+        color: #000 !important;
+        border: 1px solid #000 !important;
+      }
+
+      .bulletin-table td {
+        border: 1px solid #000 !important;
+      }
+
+      .mention-badge {
+        border: 1px solid #000 !important;
+        background: transparent !important;
+        color: #000 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Topbar Header -->
+  <header class="topbar">
+    <div class="topbar-content">
+      <div class="brand">
+        <div class="brand-badge">LK</div>
+        <span>Lekòl Konekte — Jesyon Nòt</span>
+      </div>
+
+      <nav class="nav-tabs">
+        <button class="tab-btn active" id="tab-grades" onclick="switchView('grades')">
+          ✏️ Saisie des notes
+        </button>
+        <button class="tab-btn" id="tab-bulletin" onclick="switchView('bulletin')">
+          📄 Bulletin de notes
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ==================== PAGE 1 : SAISIE DES NOTES ==================== -->
+  <main id="view-grades" class="view container">
+    <!-- Barre de filtres de sélection -->
+    <section class="filter-panel">
+      <div class="filter-group">
+        <label for="select-class">Klas</label>
+        <select id="select-class" onchange="handleFilterChange()">
+          <option value="7e AF" selected>7e Année Fondamentale (7e AF)</option>
+          <option value="8e AF">8e Année Fondamentale (8e AF)</option>
+          <option value="9e AF">9e Année Fondamentale (9e AF)</option>
+          <option value="NS1">Nouveau Secondaire 1 (NS1)</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="select-subject">Matyè (Matière)</label>
+        <select id="select-subject" onchange="handleFilterChange()">
+          <option value="Matematik" selected>Matematik (Mathématiques)</option>
+          <option value="Fransè">Fransè (Français)</option>
+          <option value="Syans">Syans (Sciences Expérimentales)</option>
+          <option value="Istwa-Jewografi">Istwa-Jewografi (Histoire-Géo)</option>
+          <option value="Kreyòl">Kreyòl (Créole Haïtien)</option>
+          <option value="Angle">Angle (Anglais)</option>
+          <option value="Edikasyon Fizik">Edikasyon Fizik (EPS)</option>
+          <option value="Relijyon">Relijyon / Moral</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="select-term">Peryòd (Trimestre)</label>
+        <select id="select-term" onchange="handleFilterChange()">
+          <option value="T1" selected>1e Trimès (Trimestre 1)</option>
+          <option value="T2">2e Trimès (Trimestre 2)</option>
+          <option value="T3">3e Trimès (Trimestre 3)</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Table de Saisie -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 60px; text-align: center;">N°</th>
+            <th style="min-width: 240px;">Non ak Prenon Elèv la</th>
+            <th style="width: 140px; text-align: center;">Nòt / 100</th>
+            <th style="min-width: 220px;">Remak / Obsèvasyon</th>
+          </tr>
+        </thead>
+        <tbody id="grades-tbody">
+          <!-- Généré via JS (20 élèves haïtiens) -->
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2" style="text-align: right;">Mwayèn Klas la pou matyè sa :</td>
+            <td style="text-align: center; color: var(--primary); font-size: 1.15rem;" id="footer-class-avg">--</td>
+            <td><small id="footer-class-count">20 elèv anrejistre</small></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Barre d'action bas de page -->
+    <div class="action-bar">
+      <div class="stats-card">
+        <span>Mwayèn Egzamen :</span>
+        <span class="moy-value" id="stats-avg-display">0.00 / 100</span>
+      </div>
+
+      <button class="btn btn-accent" onclick="saveGrades()">
+        💾 Anrejistre tout nòt yo (Enregistrer)
+      </button>
+    </div>
+  </main>
+
+  <!-- ==================== PAGE 2 : BULLETIN SCOLAIRE ==================== -->
+  <main id="view-bulletin" class="view container hidden">
+    <!-- Barre de contrôle du bulletin -->
+    <div class="bulletin-toolbar">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <label for="select-student" style="font-weight: 700; font-size: 0.9rem;">Chwazi Elèv :</label>
+        <select id="select-student" onchange="renderStudentBulletin(this.value)" style="min-width: 240px;">
+          <!-- Options d'élèves peuplées en JS -->
+        </select>
+      </div>
+
+      <button class="btn btn-primary" onclick="window.print()">
+        🖨️ Enprime Bleten an (Imprimer A4)
+      </button>
+    </div>
+
+    <!-- Feuille Bulletin Formelle -->
+    <div class="bulletin-sheet">
+      <!-- En-tête officiel -->
+      <div class="bulletin-header">
+        <div class="school-emblem">LK</div>
+        <div>
+          <p class="ministry-title">Repiblik d Ayiti — Ministè Edikasyon Nasyonal (MENFP)</p>
+          <h1 class="school-name">Enstitisyon Lekòl Konekte</h1>
+          <p class="school-motto">« Paran, pwofesè, elèv — ansanm pou siksè »</p>
+          <div class="bulletin-title">Bleten Nòt Eskolè</div>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); text-align: right; line-height: 1.4;">
+          <strong>Pòtoprens</strong><br>
+          Kòd: 01-LK-24<br>
+          Tel: 3700-0000
+        </div>
+      </div>
+
+      <!-- Informations de l'élève -->
+      <div class="student-info-box">
+        <div class="info-row">
+          <span>Non ak Prenon :</span>
+          <span id="b-student-name">--</span>
+        </div>
+        <div class="info-row">
+          <span>Ane Eskolè :</span>
+          <span>2024-2025</span>
+        </div>
+        <div class="info-row">
+          <span>Klas :</span>
+          <span id="b-student-class">7e Année Fondamentale (7e AF)</span>
+        </div>
+        <div class="info-row">
+          <span>Nimewo Idantifikasyon :</span>
+          <span id="b-student-id">LK-2024-001</span>
+        </div>
+      </div>
+
+      <!-- Tableau récapitulatif des matières -->
+      <table class="bulletin-table">
+        <thead>
+          <tr>
+            <th style="text-align: left;">Matyè (Matières)</th>
+            <th style="width: 50px;">Koèf</th>
+            <th style="width: 60px;">Trim 1</th>
+            <th style="width: 60px;">Trim 2</th>
+            <th style="width: 60px;">Trim 3</th>
+            <th style="width: 80px;">Mwayèn</th>
+            <th style="width: 60px;">Ran</th>
+          </tr>
+        </thead>
+        <tbody id="bulletin-tbody">
+          <!-- Matières rendues en JS -->
+        </tbody>
+      </table>
+
+      <!-- Résumé Général et Mention -->
+      <div class="bulletin-summary-grid">
+        <div class="summary-card">
+          <p style="font-size: 0.95rem; margin-bottom: 6px;">
+            Total Pwen : <strong id="b-total-points">0</strong> / <span id="b-total-max">0</span>
+          </p>
+          <p style="font-size: 1.05rem;">
+            Mwayèn Jeneral : <strong id="b-general-avg" style="color: var(--primary); font-size: 1.25rem;">0.00 / 100</strong>
+          </p>
+          <p style="font-size: 0.95rem; margin-top: 6px;">
+            Mansyon : <span id="b-mention" class="mention-badge">--</span>
+          </p>
+        </div>
+        <div class="summary-card" style="text-align: center;">
+          <p style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">RAN JENERAL NAN KLAS LA</p>
+          <p style="font-size: 1.8rem; font-weight: 900; color: var(--primary); margin: 4px 0;" id="b-general-rank">1e</p>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">sou 20 elèv</p>
+        </div>
+      </div>
+
+      <!-- Signatures Officielles -->
+      <div class="signatures">
+        <div class="sig-block">Mèt Klas la (Pwofesè)</div>
+        <div class="sig-block">Paran / Responsab</div>
+        <div class="sig-block">Direksyon Pedagogik</div>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast" class="toast">Mesaj</div>
+
+  <!-- JavaScript : Logique applicative, calculs et données -->
+  <script>
+    // 1. Liste des 20 élèves avec noms et prénoms typiquement haïtiens
+    const STUDENTS = [
+      { id: 1, name: "Jean-Baptiste Alexandre", idCode: "LK-24-01" },
+      { id: 2, name: "Dorcely Wood-Jerry", idCode: "LK-24-02" },
+      { id: 3, name: "Saint-Louis Marie-Florence", idCode: "LK-24-03" },
+      { id: 4, name: "Augustin Wildeline", idCode: "LK-24-04" },
+      { id: 5, name: "Pierre Peterson", idCode: "LK-24-05" },
+      { id: 6, name: "Célestin Lovelie", idCode: "LK-24-06" },
+      { id: 7, name: "Toussaint Kesly", idCode: "LK-24-07" },
+      { id: 8, name: "Hyppolite Mirlande", idCode: "LK-24-08" },
+      { id: 9, name: "Guerrier Stevenson", idCode: "LK-24-09" },
+      { id: 10, name: "François Stanley", idCode: "LK-24-10" },
+      { id: 11, name: "Beauvil Daphney", idCode: "LK-24-11" },
+      { id: 12, name: "Noël Jameson", idCode: "LK-24-12" },
+      { id: 13, name: "Joseph Naïka", idCode: "LK-24-13" },
+      { id: 14, name: "Chery Djouvensky", idCode: "LK-24-14" },
+      { id: 15, name: "Bien-Aimé Ketsia", idCode: "LK-24-15" },
+      { id: 16, name: "Moïse Jean-Claude", idCode: "LK-24-16" },
+      { id: 17, name: "Casimir Ruth", idCode: "LK-24-17" },
+      { id: 18, name: "Bellegarde Fabrice", idCode: "LK-24-18" },
+      { id: 19, name: "Delva Sarah-Line", idCode: "LK-24-19" },
+      { id: 20, name: "Germain Jean-Bernard", idCode: "LK-24-20" }
+    ];
+
+    // 2. Matières et Coefficients conformes aux programmes
+    const SUBJECTS = [
+      { key: "Matematik", label: "Matematik", coef: 4 },
+      { key: "Fransè", label: "Fransè", coef: 3 },
+      { key: "Syans", label: "Syans Eksperimantal", coef: 3 },
+      { key: "Istwa-Jewografi", label: "Istwa-Jewografi", coef: 2 },
+      { key: "Kreyòl", label: "Kreyòl Ayisyen", coef: 3 },
+      { key: "Angle", label: "Angle", coef: 2 },
+      { key: "Edikasyon Fizik", label: "Edikasyon Fizik (EPS)", coef: 1 },
+      { key: "Relijyon", label: "Relijyon & Moral", coef: 1 }
+    ];
+
+    // Base de données réactive en mémoire pour les 20 élèves
+    // Structure: gradesDatabase[studentId][subjectKey] = { t1, t2, t3, obs }
+    const gradesDatabase = {};
+
+    function initDatabase() {
+      STUDENTS.forEach((student, index) => {
+        gradesDatabase[student.id] = {};
+        SUBJECTS.forEach((sub, sIdx) => {
+          // Génération de notes réalistes cohérentes (entre 50 et 96)
+          const base = 56 + ((index * 7 + sIdx * 9) % 38);
+          gradesDatabase[student.id][sub.key] = {
+            t1: Math.min(98, base + (sIdx % 3) * 2),
+            t2: Math.min(99, base + 2),
+            t3: Math.min(97, base - 1),
+            obs: base >= 80 ? "Trè bon travay" : (base >= 60 ? "Ka amelyore" : "Fòk li travay plis")
+          };
+        });
+      });
+    }
+
+    // Gestion de l'affichage Saisie vs Bulletin
+    function switchView(viewName) {
+      document.getElementById('view-grades').classList.toggle('hidden', viewName !== 'grades');
+      document.getElementById('view-bulletin').classList.toggle('hidden', viewName !== 'bulletin');
+      document.getElementById('tab-grades').classList.toggle('active', viewName === 'grades');
+      document.getElementById('tab-bulletin').classList.toggle('active', viewName === 'bulletin');
+
+      if (viewName === 'bulletin') {
+        renderStudentBulletin(document.getElementById('select-student').value);
+      }
+    }
+
+    // Initialisation et Rendu de la Table de Saisie
+    function renderGradesTable() {
+      const tbody = document.getElementById('grades-tbody');
+      tbody.innerHTML = '';
+
+      const currentSubject = document.getElementById('select-subject').value;
+      const currentTerm = document.getElementById('select-term').value.toLowerCase(); // 't1','t2','t3'
+
+      STUDENTS.forEach((st, idx) => {
+        const studentData = gradesDatabase[st.id][currentSubject] || { t1: 0, t2: 0, t3: 0, obs: "" };
+        const tr = document.createElement('tr');
+        
+        tr.innerHTML = `
+          <td style="text-align: center; font-weight: 700; color: var(--text-muted);">${idx + 1}</td>
+          <td><strong>${st.name}</strong> <br><small style="color: var(--text-muted);">${st.idCode}</small></td>
+          <td style="text-align: center;">
+            <input type="number" min="0" max="100" class="note-input" 
+              value="${studentData[currentTerm]}" 
+              oninput="handleNoteInput(${st.id}, '${currentSubject}', '${currentTerm}', this.value)" />
+          </td>
+          <td>
+            <input type="text" class="obs-input" 
+              value="${studentData.obs || ''}" 
+              placeholder="Ajoute yon remak..."
+              oninput="handleObsInput(${st.id}, '${currentSubject}', this.value)" />
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      calculateClassAverage();
+    }
+
+    // Mise à jour de la note dans la DB
+    function handleNoteInput(studentId, subject, term, value) {
+      let val = parseFloat(value);
+      if (isNaN(val)) val = 0;
+      if (val > 100) val = 100;
+      if (val < 0) val = 0;
+      
+      gradesDatabase[studentId][subject][term] = val;
+      calculateClassAverage();
+    }
+
+    // Mise à jour de l'observation
+    function handleObsInput(studentId, subject, text) {
+      gradesDatabase[studentId][subject].obs = text;
+    }
+
+    // Calcul de la moyenne de la classe en direct
+    function calculateClassAverage() {
+      const currentSubject = document.getElementById('select-subject').value;
+      const currentTerm = document.getElementById('select-term').value.toLowerCase();
+
+      let total = 0;
+      STUDENTS.forEach(st => {
+        const grade = gradesDatabase[st.id][currentSubject][currentTerm] || 0;
+        total += grade;
+      });
+
+      const avg = (total / STUDENTS.length).toFixed(2);
+      document.getElementById('footer-class-avg').innerText = `${avg} / 100`;
+      document.getElementById('stats-avg-display').innerText = `${avg} / 100`;
+    }
+
+    // Gestion changement filtres
+    function handleFilterChange() {
+      renderGradesTable();
+      showToast("Tablo nòt mete ajou.");
+    }
+
+    // Sauvegarde avec notification
+    function saveGrades() {
+      showToast("Nòt yo anrejistre avèk siksè nan baz done lekòl la !");
+    }
+
+    // Initialisation du sélecteur d'élèves pour le bulletin
+    function populateStudentSelect() {
+      const select = document.getElementById('select-student');
+      select.innerHTML = '';
+      STUDENTS.forEach(st => {
+        const opt = document.createElement('option');
+        opt.value = st.id;
+        opt.textContent = `${st.name} (${st.idCode})`;
+        select.appendChild(opt);
+      });
+    }
+
+    // Rendu du Bulletin pour un élève spécifique
+    function renderStudentBulletin(studentId) {
+      const student = STUDENTS.find(s => s.id == studentId) || STUDENTS[0];
+      
+      // Méta infos
+      document.getElementById('b-student-name').innerText = student.name;
+      document.getElementById('b-student-id').innerText = student.idCode;
+      document.getElementById('b-student-class').innerText = document.getElementById('select-class').value;
+
+      const tbody = document.getElementById('bulletin-tbody');
+      tbody.innerHTML = '';
+
+      let totalPoints = 0;
+      let totalCoef = 0;
+
+      // Construction des rangs de la matière pour cet élève
+      SUBJECTS.forEach(sub => {
+        const data = gradesDatabase[student.id][sub.key];
+        const t1 = Number(data.t1);
+        const t2 = Number(data.t2);
+        const t3 = Number(data.t3);
+        const subjectAvg = ((t1 + t2 + t3) / 3);
+
+        totalPoints += subjectAvg * sub.coef;
+        totalCoef += sub.coef;
+
+        // Calcul du rang de l'élève pour cette matière
+        const sortedScores = STUDENTS.map(st => {
+          const sData = gradesDatabase[st.id][sub.key];
+          return ((Number(sData.t1) + Number(sData.t2) + Number(sData.t3)) / 3);
+        }).sort((a, b) => b - a);
+
+        const rankInSubject = sortedScores.findIndex(score => Math.abs(score - subjectAvg) < 0.001) + 1;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="subject-name">${sub.label}</td>
+          <td><strong>${sub.coef}</strong></td>
+          <td>${t1.toFixed(1)}</td>
+          <td>${t2.toFixed(1)}</td>
+          <td>${t3.toFixed(1)}</td>
+          <td><strong>${subjectAvg.toFixed(2)}</strong></td>
+          <td>${rankInSubject}${rankInSubject === 1 ? 'e' : 'e'}</td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      // Calculs globaux
+      const genAvg = totalPoints / totalCoef;
+      const totalMax = totalCoef * 100;
+
+      document.getElementById('b-total-points').innerText = totalPoints.toFixed(1);
+      document.getElementById('b-total-max').innerText = totalMax;
+      document.getElementById('b-general-avg').innerText = `${genAvg.toFixed(2)} / 100`;
+
+      // Attribution de la mention requise
+      const mentionEl = document.getElementById('b-mention');
+      mentionEl.className = 'mention-badge';
+
+      if (genAvg >= 90) {
+        mentionEl.textContent = "Excellent";
+        mentionEl.classList.add('mention-excellent');
+      } else if (genAvg >= 75) {
+        mentionEl.textContent = "Bien";
+        mentionEl.classList.add('mention-bien');
+      } else if (genAvg >= 60) {
+        mentionEl.textContent = "Assez bien";
+        mentionEl.classList.add('mention-assezbien');
+      } else {
+        mentionEl.textContent = "Insuffisant";
+        mentionEl.classList.add('mention-insuffisant');
+      }
+
+      // Rang Général dans la classe
+      const allClassAverages = STUDENTS.map(st => {
+        let pts = 0;
+        let coefs = 0;
+        SUBJECTS.forEach(s => {
+          const d = gradesDatabase[st.id][s.key];
+          pts += ((Number(d.t1) + Number(d.t2) + Number(d.t3)) / 3) * s.coef;
+          coefs += s.coef;
+        });
+        return { id: st.id, avg: pts / coefs };
+      }).sort((a, b) => b.avg - a.avg);
+
+      const generalRank = allClassAverages.findIndex(item => item.id == student.id) + 1;
+      document.getElementById('b-general-rank').innerText = `${generalRank}${generalRank === 1 ? 'e' : 'e'}`;
+    }
+
+    // Affichage des toasts
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2800);
+    }
+
+    // Démarrage initial
+    window.addEventListener('DOMContentLoaded', () => {
+      initDatabase();
+      renderGradesTable();
+      populateStudentSelect();
+      renderStudentBulletin(1);
+    });
+  </script>
+</body>
+</html>

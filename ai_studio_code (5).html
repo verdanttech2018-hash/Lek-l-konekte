@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lekòl Konekte — Pano Administrasyon</title>
+  <style>
+    :root {
+      --primary: #1B4F8A;
+      --primary-dark: #123660;
+      --primary-soft: #eef4fb;
+      --accent: #E63946;
+      --accent-hover: #c92a37;
+      --text: #1f2937;
+      --text-muted: #64748b;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --success: #16a34a;
+      --warning: #ea580c;
+      --danger: #dc2626;
+      --radius: 12px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 16px rgba(27, 79, 138, 0.08);
+      --sidebar-w: 260px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ================= SIDEBAR ================= */
+    aside.sidebar {
+      width: var(--sidebar-w);
+      background: #ffffff;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar-brand {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--border);
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 1.1rem;
+    }
+
+    .brand-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--primary-dark);
+    }
+
+    .sidebar-menu {
+      flex: 1;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      overflow-y: auto;
+    }
+
+    .menu-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+    }
+
+    .menu-btn:hover {
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    .menu-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .menu-btn .menu-icon {
+      font-size: 1.2rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* ================= MAIN WRAPPER ================= */
+    .main-wrapper {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      transition: margin-left 0.3s ease;
+    }
+
+    /* ================= HEADER ================= */
+    header.topbar {
+      height: 70px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .school-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mobile-toggle {
+      display: none;
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .school-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    .school-tag {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .lang-switcher {
+      display: flex;
+      background: var(--bg);
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .lang-btn {
+      border: none;
+      background: transparent;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .lang-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-logout {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(230, 57, 70, 0.08);
+      color: var(--accent);
+      border: 1px solid rgba(230, 57, 70, 0.2);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    /* ================= MAIN CONTENT PAGES ================= */
+    main.content-area {
+      padding: 28px;
+      flex: 1;
+    }
+
+    .page-view {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .page-view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    /* ================= STATS CARDS ================= */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stat-icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 1.6rem;
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    .stat-meta p {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .stat-meta h3 {
+      font-size: 1.7rem;
+      font-weight: 900;
+      color: var(--primary-dark);
+      margin-top: 2px;
+    }
+
+    /* ================= DASHBOARD 2-COLUMNS ================= */
+    .dashboard-split {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      padding: 20px;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* ================= TABLES ================= */
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    thead th {
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      padding: 10px 14px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--border);
+    }
+
+    tbody td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    tbody tr:hover {
+      background: #fbfcfe;
+    }
+
+    .badge-status {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .badge-success { background: #dcfce7; color: var(--success); }
+    .badge-danger { background: #fee2e2; color: var(--danger); }
+    .badge-warning { background: #ffedd5; color: var(--warning); }
+
+    /* ================= RETARD LIST ================= */
+    .late-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .late-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid var(--border);
+    }
+
+    .late-item-info h5 {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .late-item-info p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .late-amount {
+      text-align: right;
+    }
+
+    .late-amount .price {
+      font-weight: 900;
+      color: var(--accent);
+      font-size: 0.95rem;
+    }
+
+    .late-amount .due {
+      font-size: 0.72rem;
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    /* ================= BOUTONS GÉNÉRAUX ================= */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-accent {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-accent:hover {
+      background: var(--accent-hover);
+    }
+
+    /* ================= FORMULAIRE PARAMÈTRES ================= */
+    .settings-form {
+      max-width: 650px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label.main-label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(27, 79, 138, 0.12);
+    }
+
+    .radio-card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .radio-card {
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      background: #fafbfc;
+      transition: all 0.2s;
+    }
+
+    .radio-card:hover {
+      border-color: var(--primary);
+    }
+
+    .radio-card input {
+      accent-color: var(--primary);
+    }
+
+    /* ================= MODAL AJOUT CLASSE ================= */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(3px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: #fff;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 460px;
+      padding: 24px;
+      box-shadow: var(--shadow-md);
+      transform: translateY(20px);
+      transition: transform 0.25s ease;
+    }
+
+    .modal-overlay.open .modal-card {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h3 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    .btn-close {
+      background: transparent;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    /* ================= TOAST ================= */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f172a;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-md);
+      transform: translateY(100px);
+      transition: transform 0.3s ease;
+      z-index: 300;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+    }
+
+    /* ================= RESPONSIVE ================= */
+    @media (max-width: 992px) {
+      .dashboard-split {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      aside.sidebar {
+        transform: translateX(-100%);
+      }
+      aside.sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      .main-wrapper {
+        margin-left: 0;
+      }
+      .mobile-toggle {
+        display: block;
+      }
+      header.topbar {
+        padding: 0 16px;
+      }
+      main.content-area {
+        padding: 16px;
+      }
+      .radio-card-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar" id="sidebar">
+    <a href="#" class="sidebar-brand">
+      <div class="brand-icon">LK</div>
+      <div class="brand-name">Lekòl Konekte</div>
+    </a>
+
+    <nav class="sidebar-menu">
+      <button class="menu-btn active" onclick="switchPage('dashboard')">
+        <span class="menu-icon">📊</span>
+        <span data-i18n="menuDashboard">Tableau de bord</span>
+      </button>
+
+      <button class="menu-btn" onclick="switchPage('classes')">
+        <span class="menu-icon">🏫</span>
+        <span data-i18n="menuClasses">Classes</span>
+      </button>
+
+      <button class="menu-btn" onclick="showPlaceholder('Élèves / Elèv yo')">
+        <span class="menu-icon">🎒</span>
+        <span data-i18n="menuStudents">Élèves</span>
+      </button>
+
+      <button class="menu-btn" onclick="showPlaceholder('Enseignants / Pwofesè yo')">
+        <span class="menu-icon">👨‍🏫</span>
+        <span data-i18n="menuTeachers">Enseignants</span>
+      </button>
+
+      <button class="menu-btn" onclick="showPlaceholder('Notes / Nòt yo')">
+        <span class="menu-icon">✏️</span>
+        <span data-i18n="menuGrades">Notes</span>
+      </button>
+
+      <button class="menu-btn" onclick="showPlaceholder('Bulletins / Bleten yo')">
+        <span class="menu-icon">📑</span>
+        <span data-i18n="menuReports">Bulletins</span>
+      </button>
+
+      <button class="menu-btn" onclick="showPlaceholder('Paiements / Peman MonCash')">
+        <span class="menu-icon">💳</span>
+        <span data-i18n="menuPayments">Paiements</span>
+      </button>
+
+      <button class="menu-btn" onclick="switchPage('settings')">
+        <span class="menu-icon">⚙️</span>
+        <span data-i18n="menuSettings">Paramètres</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span>v2.4.0 • Lekòl Konekte Ayiti</span>
+    </div>
+  </aside>
+
+  <!-- ================= WRAPPER ================= -->
+  <div class="main-wrapper">
+
+    <!-- TOPBAR HEADER -->
+    <header class="topbar">
+      <div class="school-info">
+        <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+        <div>
+          <span class="school-title" id="display-school-header">Collège Mixte Union des Apôtres</span>
+          <span class="school-tag">Pòtoprens</span>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <!-- Switcher Langue -->
+        <div class="lang-switcher">
+          <button class="lang-btn active" id="btn-ht" onclick="changeLang('ht')">HT 🇭🇹</button>
+          <button class="lang-btn" id="btn-fr" onclick="changeLang('fr')">FR 🇫🇷</button>
+        </div>
+
+        <!-- Déconnexion -->
+        <button class="btn-logout" onclick="handleLogout()">
+          <span>🚪</span>
+          <span data-i18n="logout">Déconnexion</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ZONE DE CONTENU -->
+    <main class="content-area">
+
+      <!-- ================= 1. PAGE TABLEAU DE BORD ================= -->
+      <section id="page-dashboard" class="page-view active">
+        <div class="page-header">
+          <h2 class="page-title" data-i18n="dashboardTitle">Tableau de bord Général</h2>
+          <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600;">Ane Eskolè 2024-2025</span>
+        </div>
+
+        <!-- 4 CARTES STATISTIQUES -->
+        <div class="stats-grid">
+          <!-- Stat 1 -->
+          <div class="stat-card">
+            <div class="stat-icon-box">🎒</div>
+            <div class="stat-meta">
+              <p data-i18n="statStudents">Total Élèves</p>
+              <h3>247</h3>
+            </div>
+          </div>
+          <!-- Stat 2 -->
+          <div class="stat-card">
+            <div class="stat-icon-box">🏫</div>
+            <div class="stat-meta">
+              <p data-i18n="statClasses">Classes</p>
+              <h3>12</h3>
+            </div>
+          </div>
+          <!-- Stat 3 -->
+          <div class="stat-card">
+            <div class="stat-icon-box">👨‍🏫</div>
+            <div class="stat-meta">
+              <p data-i18n="statTeachers">Enseignants</p>
+              <h3>18</h3>
+            </div>
+          </div>
+          <!-- Stat 4 -->
+          <div class="stat-card" style="border-left: 4px solid var(--accent);">
+            <div class="stat-icon-box" style="color: var(--accent); background: rgba(230, 57, 70, 0.1);">💳</div>
+            <div class="stat-meta">
+              <p data-i18n="statPendingPayments">Paiements en attente</p>
+              <h3 style="color: var(--accent);">34</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- SPLIT 2 COLONNES -->
+        <div class="dashboard-split">
+          <!-- Col 1 : 5 Derniers élèves inscrits -->
+          <div class="card">
+            <div class="card-title">
+              <span data-i18n="recentStudentsTitle">Derniers élèves inscrits</span>
+              <button class="btn btn-primary" style="padding: 6px 12px; font-size: 0.78rem;" onclick="showPlaceholder('Lis konplè elèv yo')">Tout wè</button>
+            </div>
+            
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Non ak Prenon</th>
+                    <th>Klas</th>
+                    <th>Dat Enskripsyon</th>
+                    <th>Statut</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Marie-Flore Jean-Baptiste</strong></td>
+                    <td>7e AF</td>
+                    <td>18 Oktòb 2024</td>
+                    <td><span class="badge-status badge-success">Konfime</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Woodley Auguste</strong></td>
+                    <td>8e AF</td>
+                    <td>16 Oktòb 2024</td>
+                    <td><span class="badge-status badge-success">Konfime</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Dieunelson Célestin</strong></td>
+                    <td>9e AF</td>
+                    <td>15 Oktòb 2024</td>
+                    <td><span class="badge-status badge-success">Konfime</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Wildeline Saint-Fleur</strong></td>
+                    <td>NS1</td>
+                    <td>14 Oktòb 2024</td>
+                    <td><span class="badge-status badge-warning">Dosye Enkonplè</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Stanley Pierre-Louis</strong></td>
+                    <td>7e AF</td>
+                    <td>12 Oktòb 2024</td>
+                    <td><span class="badge-status badge-success">Konfime</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Col 2 : Liste des paiements en retard -->
+          <div class="card">
+            <div class="card-title">
+              <span data-i18n="latePaymentsTitle">Paiements en retard</span>
+              <span style="font-size: 0.8rem; color: var(--accent); font-weight: 700;">MonCash / Kash</span>
+            </div>
+
+            <div class="late-list">
+              <div class="late-item">
+                <div class="late-item-info">
+                  <h5>Lovensky Dorcely</h5>
+                  <p>Paran: Jacques Dorcely (3722-XXXX)</p>
+                </div>
+                <div class="late-amount">
+                  <div class="price">4,500 HTG</div>
+                  <div class="due">Reta 15 jou</div>
+                </div>
+              </div>
+
+              <div class="late-item">
+                <div class="late-item-info">
+                  <h5>Ketsia Hyppolite</h5>
+                  <p>Paran: Marie Guerrier (3104-XXXX)</p>
+                </div>
+                <div class="late-amount">
+                  <div class="price">3,000 HTG</div>
+                  <div class="due">Reta 12 jou</div>
+                </div>
+              </div>
+
+              <div class="late-item">
+                <div class="late-item-info">
+                  <h5>Djouvensky François</h5>
+                  <p>Paran: Marc François (3889-XXXX)</p>
+                </div>
+                <div class="late-amount">
+                  <div class="price">4,500 HTG</div>
+                  <div class="due">Reta 8 jou</div>
+                </div>
+              </div>
+
+              <div class="late-item">
+                <div class="late-item-info">
+                  <h5>Florence Beauvil</h5>
+                  <p>Paran: Wideline Beauvil (3441-XXXX)</p>
+                </div>
+                <div class="late-amount">
+                  <div class="price">2,500 HTG</div>
+                  <div class="due">Reta 5 jou</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 2. PAGE CLASSES ================= -->
+      <section id="page-classes" class="page-view">
+        <div class="page-header">
+          <div>
+            <h2 class="page-title" data-i18n="classesTitle">Gestion des Classes</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;" data-i18n="classesSubtitle">Lis tout klas ki anrejistre pou ane eskolè sa a.</p>
+          </div>
+          <button class="btn btn-primary" onclick="openClassModal()">
+            <span>➕</span>
+            <span data-i18n="addClassBtn">Ajouter une classe</span>
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Kòd</th>
+                  <th>Non Klas la</th>
+                  <th>Seksyon / Sik</th>
+                  <th>Pwofesè Responsab</th>
+                  <th>Efektif (Elèv)</th>
+                  <th>Aksyon</th>
+                </tr>
+              </thead>
+              <tbody id="classes-tbody">
+                <!-- Généré dynamiquement par JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 3. PAGE PARAMÈTRES ================= -->
+      <section id="page-settings" class="page-view">
+        <div class="page-header">
+          <div>
+            <h2 class="page-title" data-i18n="settingsTitle">Paramètres de l'école</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;" data-i18n="settingsSubtitle">Konfigire enfòmasyon legal ak règ evalyasyon lekòl la.</p>
+          </div>
+        </div>
+
+        <div class="card settings-form">
+          <form onsubmit="saveSettings(event)">
+            <!-- Nom de l'école -->
+            <div class="form-group">
+              <label class="main-label" for="school-name-input" data-i18n="labelSchoolName">Nom de l'école :</label>
+              <input type="text" id="school-name-input" class="form-control" value="Collège Mixte Union des Apôtres" required>
+            </div>
+
+            <!-- Système d'évaluation -->
+            <div class="form-group">
+              <label class="main-label" data-i18n="labelEvalSystem">Système d'évaluation :</label>
+              <div class="radio-card-grid">
+                <label class="radio-card">
+                  <input type="radio" name="eval_system" value="3_terms" checked>
+                  <div>
+                    <strong data-i18n="opt3Terms">3 Trimestres</strong>
+                    <div style="font-size: 0.78rem; color: var(--text-muted);">Trimès 1, 2 ak 3 (Estanda MENFP)</div>
+                  </div>
+                </label>
+
+                <label class="radio-card">
+                  <input type="radio" name="eval_system" value="4_controls">
+                  <div>
+                    <strong data-i18n="opt4Controls">4 Contrôles</strong>
+                    <div style="font-size: 0.78rem; color: var(--text-muted);">4 Peryòd evalyasyon regilye</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Langue par défaut -->
+            <div class="form-group">
+              <label class="main-label" for="default-lang-select" data-i18n="labelDefaultLang">Langue par défaut :</label>
+              <select id="default-lang-select" class="form-control">
+                <option value="ht" selected>Kreyòl Ayisyen 🇭🇹</option>
+                <option value="fr">Français 🇫🇷</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-accent" data-i18n="saveSettingsBtn">
+              💾 Enregistrer les modifications
+            </button>
+          </form>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ================= MODAL AJOUTER CLASSE ================= -->
+  <div class="modal-overlay" id="modal-class">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 data-i18n="modalAddClassTitle">Ajouter une nouvelle classe</h3>
+        <button class="btn-close" onclick="closeClassModal()">✕</button>
+      </div>
+
+      <form onsubmit="handleCreateClass(event)">
+        <div class="form-group">
+          <label class="main-label" data-i18n="labelClassName">Nom de la classe (ex: 8e AF A)</label>
+          <input type="text" id="new-class-name" class="form-control" placeholder="ex: NS2 Philo" required>
+        </div>
+
+        <div class="form-group">
+          <label class="main-label" data-i18n="labelSection">Cycle / Section</label>
+          <select id="new-class-section" class="form-control">
+            <option value="Fondamantal">Fondamental (1e - 9e AF)</option>
+            <option value="Segondè">Nouveau Secondaire (NS1 - NS4)</option>
+            <option value="Matènèl">Matènèl / Jardinet</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="main-label" data-i18n="labelTeacherInCharge">Enseignant responsable</label>
+          <input type="text" id="new-class-teacher" class="form-control" placeholder="ex: M. Kesly Toussaint" required>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px;">
+          <button type="button" class="btn" style="background: #e2e8f0; color: var(--text);" onclick="closeClassModal()" data-i18n="cancelBtn">Annuler</button>
+          <button type="submit" class="btn btn-primary" data-i18n="createClassBtn">Créer la classe</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast" id="toast-msg">Aksyon reyisi!</div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    let currentLanguage = 'ht';
+
+    // Données des classes existantes
+    let classesList = [
+      { id: "C-01", name: "1e AF", section: "Fondamantal", teacher: "Mme Florence Saint-Louis", count: 24 },
+      { id: "C-02", name: "2e AF", section: "Fondamantal", teacher: "M. Alexandre Jean-Baptiste", count: 22 },
+      { id: "C-07", name: "7e AF", section: "Fondamantal", teacher: "M. Peterson Pierre", count: 26 },
+      { id: "C-08", name: "8e AF", section: "Fondamantal", teacher: "Mme Wildeline Augustin", count: 28 },
+      { id: "C-09", name: "9e AF", section: "Fondamantal", teacher: "M. Kesly Toussaint", count: 25 },
+      { id: "C-10", name: "Nouveau Secondaire 1 (NS1)", section: "Segondè", teacher: "M. Stevenson Guerrier", count: 21 },
+      { id: "C-11", name: "Nouveau Secondaire 2 (NS2)", section: "Segondè", teacher: "Mme Marie-Claude Moïse", count: 19 }
+    ];
+
+    // Dictionnaire bilingue
+    const i18n = {
+      ht: {
+        menuDashboard: "Pano d Bò",
+        menuClasses: "Klas yo",
+        menuStudents: "Elèv yo",
+        menuTeachers: "Pwofesè yo",
+        menuGrades: "Nòt yo",
+        menuReports: "Bleten yo",
+        menuPayments: "Peman yo",
+        menuSettings: "Paramèt yo",
+        logout: "Dekonekte",
+        dashboardTitle: "Pano Jesyon Jeneral",
+        statStudents: "Total Elèv",
+        statClasses: "Klas",
+        statTeachers: "Pwofesè",
+        statPendingPayments: "Peman ki an Reta",
+        recentStudentsTitle: "Dènye elèv ki anrejistre",
+        latePaymentsTitle: "Lis elèv ki gen reta peman",
+        classesTitle: "Jesyon Klas Lekòl la",
+        classesSubtitle: "Lis tout klas ki anrejistre pou ane eskolè sa a.",
+        addClassBtn: "Ajoute yon klas",
+        settingsTitle: "Paramèt Enstitisyon an",
+        settingsSubtitle: "Konfigire enfòmasyon legal ak règ evalyasyon lekòl la.",
+        labelSchoolName: "Non Lekòl la :",
+        labelEvalSystem: "Sistèm Evalyasyon :",
+        opt3Terms: "3 Trimès",
+        opt4Controls: "4 Kontwòl",
+        labelDefaultLang: "Lang pa defo :",
+        saveSettingsBtn: "Anrejistre Modifikasyon yo",
+        modalAddClassTitle: "Ajoute yon nouvo klas",
+        labelClassName: "Non klas la",
+        labelSection: "Sik / Seksyon",
+        labelTeacherInCharge: "Pwofesè Responsab",
+        cancelBtn: "Anile",
+        createClassBtn: "Kreye Klas la",
+        savedToast: "Paramèt yo anrejistre avèk siksè!",
+        classAddedToast: "Nouvo klas la ajoute avèk siksè!"
+      },
+      fr: {
+        menuDashboard: "Tableau de bord",
+        menuClasses: "Classes",
+        menuStudents: "Élèves",
+        menuTeachers: "Enseignants",
+        menuGrades: "Notes",
+        menuReports: "Bulletins",
+        menuPayments: "Paiements",
+        menuSettings: "Paramètres",
+        logout: "Déconnexion",
+        dashboardTitle: "Tableau de bord Général",
+        statStudents: "Total Élèves",
+        statClasses: "Classes",
+        statTeachers: "Enseignants",
+        statPendingPayments: "Paiements en attente",
+        recentStudentsTitle: "Derniers élèves inscrits",
+        latePaymentsTitle: "Paiements en retard",
+        classesTitle: "Gestion des Classes",
+        classesSubtitle: "Liste de toutes les classes enregistrées pour cette année.",
+        addClassBtn: "Ajouter une classe",
+        settingsTitle: "Paramètres de l'école",
+        settingsSubtitle: "Configurez les informations légales et règles académiques.",
+        labelSchoolName: "Nom de l'école :",
+        labelEvalSystem: "Système d'évaluation :",
+        opt3Terms: "3 Trimestres",
+        opt4Controls: "4 Contrôles",
+        labelDefaultLang: "Langue par défaut :",
+        saveSettingsBtn: "Enregistrer les modifications",
+        modalAddClassTitle: "Ajouter une nouvelle classe",
+        labelClassName: "Nom de la classe",
+        labelSection: "Section / Cycle",
+        labelTeacherInCharge: "Enseignant responsable",
+        cancelBtn: "Annuler",
+        createClassBtn: "Créer la classe",
+        savedToast: "Paramètres enregistrés avec succès!",
+        classAddedToast: "Nouvelle classe ajoutée avec succès!"
+      }
+    };
+
+    // Navigation entre pages
+    function switchPage(pageKey) {
+      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
+
+      const targetPage = document.getElementById(`page-${pageKey}`);
+      if (targetPage) targetPage.classList.add('active');
+
+      const activeBtn = Array.from(document.querySelectorAll('.menu-btn')).find(b => 
+        b.getAttribute('onclick')?.includes(pageKey)
+      );
+      if (activeBtn) activeBtn.classList.add('active');
+
+      // Fermeture sidebar sur mobile après clic
+      document.getElementById('sidebar').classList.remove('mobile-open');
+    }
+
+    // Affichage des classes
+    function renderClassesTable() {
+      const tbody = document.getElementById('classes-tbody');
+      tbody.innerHTML = '';
+
+      classesList.forEach(cls => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${cls.id}</strong></td>
+          <td><strong>${cls.name}</strong></td>
+          <td><span class="badge-status" style="background:#e0f2fe; color:#0369a1;">${cls.section}</span></td>
+          <td>${cls.teacher}</td>
+          <td><strong>${cls.count}</strong> elèv</td>
+          <td>
+            <button class="btn btn-primary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="showToast('Ouvri klas ${cls.name}')">Gade</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Modal Ajout Classe
+    function openClassModal() {
+      document.getElementById('modal-class').classList.add('open');
+    }
+
+    function closeClassModal() {
+      document.getElementById('modal-class').classList.remove('open');
+    }
+
+    function handleCreateClass(e) {
+      e.preventDefault();
+      const name = document.getElementById('new-class-name').value;
+      const section = document.getElementById('new-class-section').value;
+      const teacher = document.getElementById('new-class-teacher').value;
+
+      const newId = `C-${String(classesList.length + 1).padStart(2, '0')}`;
+      classesList.push({ id: newId, name, section, teacher, count: 0 });
+
+      renderClassesTable();
+      closeClassModal();
+      e.target.reset();
+      showToast(i18n[currentLanguage].classAddedToast);
+    }
+
+    // Sauvegarde des Paramètres
+    function saveSettings(e) {
+      e.preventDefault();
+      const newName = document.getElementById('school-name-input').value;
+      document.getElementById('display-school-header').innerText = newName;
+      showToast(i18n[currentLanguage].savedToast);
+    }
+
+    // Internationalisation
+    function changeLang(lang) {
+      currentLanguage = lang;
+      document.getElementById('btn-ht').classList.toggle('active', lang === 'ht');
+      document.getElementById('btn-fr').classList.toggle('active', lang === 'fr');
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18n[lang][key]) el.innerText = i18n[lang][key];
+      });
+    }
+
+    // Toggle Mobile Sidebar
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('mobile-open');
+    }
+
+    // Déconnexion
+    function handleLogout() {
+      if (confirm(currentLanguage === 'ht' ? "Èske ou vle dekonekte ?" : "Voulez-vous vous déconnecter ?")) {
+        showToast(currentLanguage === 'ht' ? "Sesyon an fèmen." : "Session fermée.");
+      }
+    }
+
+    function showPlaceholder(name) {
+      showToast(`Modil « ${name} » ap ouvri...`);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast-msg');
+      toast.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2800);
+    }
+
+    // Initialisation
+    window.addEventListener('DOMContentLoaded', () => {
+      renderClassesTable();
+    });
+  </script>
+</body>
+</html>

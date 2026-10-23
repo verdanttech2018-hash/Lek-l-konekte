@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lekòl Konekte — Espas Paran</title>
+  <style>
+    :root {
+      --primary: #1B4F8A;
+      --primary-dark: #123660;
+      --primary-soft: #EEF4FB;
+      --accent: #E63946;
+      --accent-hover: #c92a37;
+      --moncash-red: #d9252c;
+      --moncash-dark: #b01c22;
+      --success: #16A34A;
+      --warning: #EA580C;
+      --danger: #DC2626;
+      --bg-screen: #f1f5f9;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #0b1320;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 10px 0;
+    }
+
+    /* Cadre Mobile Smartphone */
+    .mobile-frame {
+      width: 100%;
+      max-width: 430px;
+      height: 900px;
+      max-height: 96vh;
+      background: var(--bg-screen);
+      border-radius: 40px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4), 0 0 0 8px #1e293b;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Status Bar Mobile */
+    .status-bar {
+      height: 44px;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #ffffff;
+      background: var(--primary);
+      z-index: 10;
+    }
+
+    .status-notch {
+      width: 120px;
+      height: 20px;
+      background: #0f172a;
+      border-bottom-left-radius: 14px;
+      border-bottom-right-radius: 14px;
+    }
+
+    /* Contenu scrollable de l'app */
+    .app-body {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 90px;
+      position: relative;
+    }
+
+    /* Écrans */
+    .screen {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* HEADER PARENT / ENFANT */
+    .child-header {
+      background: linear-gradient(180deg, var(--primary) 0%, #153e6d 100%);
+      color: #ffffff;
+      padding: 16px 20px 24px;
+      border-bottom-left-radius: 28px;
+      border-bottom-right-radius: 28px;
+      box-shadow: 0 8px 20px rgba(27, 79, 138, 0.2);
+    }
+
+    .top-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .app-brand {
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #93c5fd;
+    }
+
+    .academic-year {
+      font-size: 0.75rem;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .child-profile {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+    }
+
+    .child-avatar {
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid #60a5fa;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: var(--primary);
+      font-size: 1.4rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .online-indicator {
+      width: 14px;
+      height: 14px;
+      background: #22c55e;
+      border-radius: 50%;
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      border: 2px solid #ffffff;
+    }
+
+    .child-details h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .child-details .tag-class {
+      display: inline-block;
+      margin-top: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 2px 10px;
+      border-radius: 6px;
+    }
+
+    /* PADDING GÉNÉRAL DES SECTIONS */
+    .section-padding {
+      padding: 16px 16px 0;
+    }
+
+    /* CARTES RÉSUMÉ (3 STATS) */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: -16px;
+      padding: 0 16px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 12px 8px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+      border: 1px solid var(--border);
+    }
+
+    .stat-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: var(--primary-dark);
+    }
+
+    .stat-sub {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* LISTE DERNIÈRES NOTES */
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text);
+      margin: 20px 0 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .notes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .note-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    }
+
+    .note-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .subject-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 1.2rem;
+      background: var(--primary-soft);
+    }
+
+    .note-info h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .note-info p {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .score-pill {
+      min-width: 62px;
+      padding: 6px 10px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    /* Couleurs de notes obligatoires */
+    .score-green {
+      background: #dcfce7;
+      color: var(--success);
+      border: 1px solid #bbf7d0;
+    }
+    .score-orange {
+      background: #ffedd5;
+      color: var(--warning);
+      border: 1px solid #fed7aa;
+    }
+    .score-red {
+      background: #fee2e2;
+      color: var(--danger);
+      border: 1px solid #fecaca;
+    }
+
+    /* BOUTONS D'ACTION */
+    .btn-bulletin {
+      width: 100%;
+      margin: 14px 0 6px;
+      padding: 12px;
+      background: var(--primary-soft);
+      border: 1.5px solid #bfdbfe;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.88rem;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* SECTION PAIEMENTS */
+    .payment-card {
+      background: linear-gradient(135deg, #ffffff 0%, #fdfdfd 100%);
+      border-radius: 16px;
+      padding: 16px;
+      border: 1.5px solid #fecdd3;
+      box-shadow: 0 4px 14px rgba(225, 29, 72, 0.06);
+      margin-top: 10px;
+    }
+
+    .payment-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .payment-top span {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    .payment-amount {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--text);
+    }
+
+    .payment-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .btn-moncash {
+      width: 100%;
+      background: var(--moncash-red);
+      color: #ffffff;
+      padding: 13px;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(217, 37, 44, 0.3);
+      transition: background 0.2s;
+    }
+
+    .btn-moncash:hover {
+      background: var(--moncash-dark);
+    }
+
+    /* PAGE NOTIFICATIONS */
+    .notif-header {
+      background: #ffffff;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    .notif-header h2 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    .notif-list {
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .notif-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .notif-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .notif-icon-blue { background: #e0f2fe; }
+    .notif-icon-amber { background: #fef3c7; }
+    .notif-icon-red { background: #fee2e2; }
+
+    .notif-content h4 {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: 3px;
+    }
+
+    .notif-content p {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+
+    .notif-time {
+      font-size: 0.68rem;
+      color: #94a3b8;
+      font-weight: 600;
+      margin-top: 6px;
+    }
+
+    /* BOTTOM NAVIGATION BAR */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 10px;
+      z-index: 20;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      position: relative;
+      width: 33%;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+    }
+
+    .nav-icon {
+      font-size: 1.3rem;
+    }
+
+    .nav-badge-dot {
+      position: absolute;
+      top: 0;
+      right: 36%;
+      width: 9px;
+      height: 9px;
+      background: var(--accent);
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+    }
+
+    /* MODAL DE PAIEMENT MONCASH */
+    .modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 50;
+      display: flex;
+      align-items: flex-end;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-sheet {
+      width: 100%;
+      background: #ffffff;
+      border-top-left-radius: 26px;
+      border-top-right-radius: 26px;
+      padding: 24px 20px 30px;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-overlay.open .modal-sheet {
+      transform: translateY(0);
+    }
+
+    .moncash-badge-pill {
+      background: #fee2e2;
+      color: var(--moncash-red);
+      font-weight: 900;
+      font-size: 0.8rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .modal-sheet input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      font-size: 1rem;
+      margin: 12px 0 16px;
+      outline: none;
+    }
+
+    .modal-sheet input:focus {
+      border-color: var(--moncash-red);
+    }
+
+    /* TOAST ALERT */
+    .toast {
+      position: absolute;
+      top: 56px;
+      left: 16px;
+      right: 16px;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      transform: translateY(-80px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 60;
+      text-align: center;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CADRE MOBILE IDENTIQUE SMARTPHONE -->
+  <div class="mobile-frame">
+
+    <!-- Barre système haut -->
+    <div class="status-bar">
+      <span>09:41</span>
+      <div class="status-notch"></div>
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <span>LTE</span>
+        <span>85%</span>
+      </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="toast-msg" class="toast">Aksyon reyisi!</div>
+
+    <!-- CONTENU DÉFILANT -->
+    <div class="app-body">
+
+      <!-- ================= ÉCRAN 1 : TABLEAU DE BORD PARENT ================= -->
+      <section id="screen-dashboard" class="screen active">
+        
+        <!-- HEADER ENFANT -->
+        <header class="child-header">
+          <div class="top-meta">
+            <span class="app-brand">Lekòl Konekte</span>
+            <span class="academic-year">2024-2025</span>
+          </div>
+
+          <div class="child-profile">
+            <div class="avatar-wrapper">
+              <div class="child-avatar">WA</div>
+              <div class="online-indicator"></div>
+            </div>
+            <div class="child-details">
+              <h2>Woodley Auguste</h2>
+              <span class="tag-class">Klas : 8e AF</span>
+            </div>
+          </div>
+        </header>
+
+        <!-- CARTES RÉSUMÉ (3 KPI) -->
+        <div class="summary-grid">
+          <div class="stat-card">
+            <div class="stat-label">Mwayèn</div>
+            <div class="stat-value" style="color: var(--primary);">78<span style="font-size:0.75rem;">/100</span></div>
+            <div class="stat-sub">Trimès 1</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Absans</div>
+            <div class="stat-value" style="color: var(--warning);">3</div>
+            <div class="stat-sub">Jou total</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Klasman</div>
+            <div class="stat-value" style="color: var(--accent);">5<sup>e</sup></div>
+            <div class="stat-sub">sou 28 elèv</div>
+          </div>
+        </div>
+
+        <div class="section-padding">
+          <!-- LISTE DES DERNIÈRES NOTES -->
+          <div class="section-title">
+            <span>Dènye nòt pibliye</span>
+            <small style="color: var(--primary); font-size: 0.75rem; font-weight: 700;">Nouvo</small>
+          </div>
+
+          <div class="notes-list">
+            <!-- Note Verte : >= 75 -->
+            <div class="note-card">
+              <div class="note-meta">
+                <div class="subject-icon">📐</div>
+                <div class="note-info">
+                  <h4>Matematik</h4>
+                  <p>Egzamen Trimès 1</p>
+                </div>
+              </div>
+              <div class="score-pill score-green">88 / 100</div>
+            </div>
+
+            <!-- Note Orange : 60-74 -->
+            <div class="note-card">
+              <div class="note-meta">
+                <div class="subject-icon">📖</div>
+                <div class="note-info">
+                  <h4>Fransè</h4>
+                  <p>Diktasyon & Gramè</p>
+                </div>
+              </div>
+              <div class="score-pill score-orange">68 / 100</div>
+            </div>
+
+            <!-- Note Rouge : < 60 -->
+            <div class="note-card">
+              <div class="note-meta">
+                <div class="subject-icon">🔬</div>
+                <div class="note-info">
+                  <h4>Syans Eksperimantal</h4>
+                  <p>Kontwòl Kontinyèl</p>
+                </div>
+              </div>
+              <div class="score-pill score-red">54 / 100</div>
+            </div>
+
+            <!-- Note Verte : >= 75 -->
+            <div class="note-card">
+              <div class="note-meta">
+                <div class="subject-icon">🇭🇹</div>
+                <div class="note-info">
+                  <h4>Kreyòl Ayisyen</h4>
+                  <p>Redaksyon & Lekti</p>
+                </div>
+              </div>
+              <div class="score-pill score-green">82 / 100</div>
+            </div>
+          </div>
+
+          <!-- BOUTON VOIR BULLETIN COMPLET -->
+          <button class="btn-bulletin" onclick="openFullReport()">
+            📑 Gade bleten konplè a (PDF)
+          </button>
+
+          <!-- SECTION PAIEMENTS / MONCASH -->
+          <div class="section-title">
+            <span>Frè Eskolè & Peman</span>
+          </div>
+
+          <div class="payment-card">
+            <div class="payment-top">
+              <span>Montan ki dwe a</span>
+              <span style="background: #fee2e2; color: var(--danger); font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 4px;">Peman annatant</span>
+            </div>
+            <div class="payment-amount">4,500 HTG</div>
+            <p class="payment-desc">Frais eskolè pou mwa Novanm 2024 la dwe peye anvan 30 novanm.</p>
+
+            <button class="btn-moncash" onclick="openPaymentModal()">
+              <span>📲</span>
+              <span>Peye ak MonCash</span>
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================= ÉCRAN 2 : NOTIFICATIONS ================= -->
+      <section id="screen-notifications" class="screen">
+        <div class="notif-header">
+          <h2>Notifikasyon</h2>
+        </div>
+
+        <div class="notif-list">
+          
+          <!-- Notif 1 : Notes -->
+          <div class="notif-card">
+            <div class="notif-icon-box notif-icon-blue">📊</div>
+            <div class="notif-content">
+              <h4>Nouvo nòt disponib — Matematik</h4>
+              <p>Pwofesè a fenk mete nòt pou egzamen premye trimès la sou platfòm nan.</p>
+              <div class="notif-time">Jodi a • 08:30 AM</div>
+            </div>
+          </div>
+
+          <!-- Notif 2 : Absences -->
+          <div class="notif-card">
+            <div class="notif-icon-box notif-icon-amber">⚠️</div>
+            <div class="notif-content">
+              <h4>2 absans semèn sa a</h4>
+              <p>Woodley te absan Madi ak Jedi pandan sesyon maten an san jistifikasyon.</p>
+              <div class="notif-time">Yè • 04:15 PM</div>
+            </div>
+          </div>
+
+          <!-- Notif 3 : Frais MonCash -->
+          <div class="notif-card">
+            <div class="notif-icon-box notif-icon-red">💳</div>
+            <div class="notif-content">
+              <h4>Frè eskolè dwe anvan 30 novanm</h4>
+              <p>Rapèl peman 4,500 HTG pou dezyèm vèsman an. Ou ka peye dirèkteman sou MonCash.</p>
+              <div class="notif-time">22 Nov • 10:00 AM</div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ================= BARRE DE NAVIGATION INFÉRIEURE ================= -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" id="btn-nav-dash" onclick="navigate('dashboard')">
+        <span class="nav-icon">🏠</span>
+        <span>Akèy</span>
+      </button>
+
+      <button class="nav-item" id="btn-nav-notif" onclick="navigate('notifications')">
+        <span class="nav-icon">🔔</span>
+        <span>Alèt</span>
+        <div class="nav-badge-dot"></div>
+      </button>
+
+      <button class="nav-item" onclick="showToast('Modil Mesaj Pwofesè ap ouvri talè!')">
+        <span class="nav-icon">💬</span>
+        <span>Mesaj</span>
+      </button>
+    </nav>
+
+    <!-- ================= MODAL SIMULATION MONCASH ================= -->
+    <div id="payment-modal" class="modal-overlay" onclick="closePaymentModal(event)">
+      <div class="modal-sheet" onclick="event.stopPropagation()">
+        <span class="moncash-badge-pill">MonCash Peman Sekirize</span>
+        <h3 style="color: var(--text); font-size: 1.15rem; margin-bottom: 4px;">Peye 4,500 HTG</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">Antre nimewo telefòn Digicel ou pou resevwa demann PIN la.</p>
+        
+        <input type="tel" id="moncash-phone" placeholder="Egzanp: +509 37XX-XXXX" value="+509 ">
+
+        <div style="display: flex; gap: 10px;">
+          <button class="btn-bulletin" style="margin: 0; flex: 1;" onclick="closeModal()">Anile</button>
+          <button class="btn-moncash" style="flex: 2; padding: 12px;" onclick="processPayment()">Konfime Peman</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- JS LOGIQUE MOBILE & INTERACTION -->
+  <script>
+    function navigate(screenName) {
+      // Écrans
+      document.getElementById('screen-dashboard').classList.toggle('active', screenName === 'dashboard');
+      document.getElementById('screen-notifications').classList.toggle('active', screenName === 'notifications');
+
+      // Boutons Bottom Nav
+      document.getElementById('btn-nav-dash').classList.toggle('active', screenName === 'dashboard');
+      document.getElementById('btn-nav-notif').classList.toggle('active', screenName === 'notifications');
+    }
+
+    function openFullReport() {
+      showToast("Chajman bleten Woodley Auguste (PDF)...");
+    }
+
+    function openPaymentModal() {
+      document.getElementById('payment-modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('payment-modal').classList.remove('open');
+    }
+
+    function closePaymentModal(e) {
+      if (e.target.id === 'payment-modal') {
+        closeModal();
+      }
+    }
+
+    function processPayment() {
+      const phone = document.getElementById('moncash-phone').value;
+      if (phone.length < 8) {
+        showToast("Tanpri mete yon nimewo Digicel valab");
+        return;
+      }
+      closeModal();
+      showToast("Tranzaksyon MonCash lanse sou " + phone + "!");
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast-msg');
+      toast.innerText = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
